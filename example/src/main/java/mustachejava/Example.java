@@ -4,29 +4,40 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Example {
 
-  List<Item> items() {
+  List<Issue> issues() throws URISyntaxException {
     return Arrays.asList(
-            new Item("Item 1", "$19.99", Arrays.asList(new Feature("New!"), new Feature("Awesome!"))),
-            new Item("Item 2", "$29.99", Arrays.asList(new Feature("Old."), new Feature("Ugly.")))
+            new Issue(68l, new URI("http://notmyissues.herokuapp.com/services/issues/68"), "Code Quality", "a short summary", Priority.LOW),
+            new Issue(50l, new URI("http://notmyissues.herokuapp.com/services/issues/50"), "Bug", "a short bug summary", Priority.HIGH)
     );
   }
 
-  static class Item {
-    Item(String name, String price, List<Feature> features) {
-      this.name = name;
-      this.price = price;
-      this.features = features;
-    }
+  static class Issue {
 
-    String name, price;
-    List<Feature> features;
+      Long id;
+
+      Issue(Long id, URI issueDetailUri, String issueType, String summary, Priority priority) {
+          this.id = id;
+          this.issueDetailUri = issueDetailUri;
+          this.issueType = issueType;
+          this.summary = summary;
+          this.priority = priority;
+      }
+
+      URI issueDetailUri;
+      String issueType;
+      String summary;
+      Priority priority;
+
   }
 
   static class Feature {
@@ -37,9 +48,15 @@ public class Example {
     String description;
   }
 
+  enum Priority {
+      LOW,
+      MEDIUM,
+      HIGH
+  }
+
   public static void main(String[] args) throws IOException {
     MustacheFactory mf = new DefaultMustacheFactory();
-    Mustache mustache = mf.compile("template.mustache");
-    mustache.execute(new PrintWriter(System.out), new Example()).flush();
+    Mustache mustache = mf.compile("issues.mustache");
+    mustache.execute(new PrintWriter(new File("/Users/rr/develop/projects/remote/git/mustache.java/example/target/classes/issues.html")), new Example()).flush();
   }
 }
