@@ -57,6 +57,6 @@ public class Example {
   public static void main(String[] args) throws IOException {
     MustacheFactory mf = new DefaultMustacheFactory();
     Mustache mustache = mf.compile("issues.mustache");
-    mustache.execute(new PrintWriter(new File("/Users/rr/develop/projects/remote/git/mustache.java/example/target/classes/issues.html")), new Example()).flush();
+    mustache.execute(new PrintWriter("/Users/rr/develop/projects/remote/git/mustache.java/example/target/classes/issues.html", "UTF-8"), new Example()).flush();
   }
 }
